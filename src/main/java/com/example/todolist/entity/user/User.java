@@ -1,5 +1,6 @@
 package com.example.todolist.entity.user;
 
+import com.example.todolist.dto.user.UserRequestDTO;
 import com.example.todolist.entity.base.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,6 +20,13 @@ public class User extends BaseEntity {
     private String userName; // 이름
     private String userPhone; // 전화번호
 
+    /** 메서드 **/
+    public void userUpdate(UserRequestDTO.UserUpdateDTO userUpdateDTO) {
+        this.userEmail = userUpdateDTO.getUserEmail();
+        this.userPassword = userUpdateDTO.getUserPassword();
+        this.userName = userUpdateDTO.getUserName();
+        this.userPhone = userUpdateDTO.getUserPhone();
+    }
 
     /** 생성자 **/
     protected User() {

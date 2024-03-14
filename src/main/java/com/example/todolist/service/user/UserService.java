@@ -11,10 +11,10 @@ public interface UserService {
     UserResponseDTO.UserLoginDTO login(UserRequestDTO.UserLoginDTO userLoginDTO);
 
     // 회원 탈퇴
-    void delete(String userEmail);
+    String delete(Long userId);
 
     // 회원 수정
-    UserResponseDTO.UserUpdateDTO update(String userEmail);
+    UserResponseDTO.UserUpdateDTO update(UserRequestDTO.UserUpdateDTO userUpdateDTO);
 
     // 내 정보 조회
     UserResponseDTO.UserFindOneDTO findOne(Long userId);

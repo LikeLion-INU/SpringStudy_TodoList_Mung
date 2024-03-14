@@ -18,6 +18,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     @Override
+    @Transactional
     public UserResponseDTO.UserJoinDTO join(UserRequestDTO.UserJoinDTO userJoinDTO) {
         try {
             User user = userJoinDTO.toEntity();
@@ -41,7 +42,7 @@ public class UserServiceImpl implements UserService {
     public UserResponseDTO.UserLoginDTO login(UserRequestDTO.UserLoginDTO userLoginDTO) {
         try {
             User loginUser = userLoginDTO.toEntity();
-            Optional<User> optionalFindUser = userRepository.findByUserEmail(loginUser.getUserEmail());
+            Optional<User> optionalFindUser = userRepository.findByUserEmail(loginUser.getUserEmail()); // DB에서 회원 조회
 
             if(!optionalFindUser.isPresent()) {
                 // 존재하지 않은 이메일
@@ -62,18 +63,64 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(String userEmail) {
+    @Transactional
+    public String delete(Long userId) {
+        try {
+            Optional<User> optionalFindUser = userRepository.findById(userId);
 
+            if(!optionalFindUser.isPresent()) {
+                // 존재하지 않은 이메일
+                log.info("[ERROR] 존재하지 않은 회원 입니다.");
+                return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+            }
+
+            userRepository.deleteById(userId); // DB에서 회원 삭제
+
+            return "SUCCESS";
+        } catch (Exception e) {
+            log.info("[ERROR] Exception500");
+            return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+        }
     }
 
     @Override
-    public UserResponseDTO.UserUpdateDTO update(String userEmail) {
-        return null;
+    @Transactional
+    public UserResponseDTO.UserUpdateDTO update(UserRequestDTO.UserUpdateDTO userUpdateDTO) {
+        try {
+            Optional<User> optionalFindUser = userRepository.findByUserEmail(userUpdateDTO.getUserEmail()); // DB에서 회원 조회
+
+            if(!optionalFindUser.isPresent()) {
+                // 존재하지 않은 이메일
+                log.info("[ERROR] 존재하지 않은 이메일 입니다.");
+                return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+            }
+
+            // 회원 수정 과정 진행
+            optionalFindUser.get().userUpdate(userUpdateDTO);
+
+            return new UserResponseDTO.UserUpdateDTO(optionalFindUser.get());
+        } catch (Exception e) {
+            log.info("[ERROR] Exception500");
+            return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+        }
     }
 
     @Override
     public UserResponseDTO.UserFindOneDTO findOne(Long userId) {
-        return null;
+        try {
+            Optional<User> optionalFindUser = userRepository.findById(userId); // DB에서 회원 조회
+
+            if(!optionalFindUser.isPresent()) {
+                // 존재하지 않은 이메일
+                log.info("[ERROR] 존재하지 않은 회원 입니다.");
+                return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+            }
+
+            return new UserResponseDTO.UserFindOneDTO(optionalFindUser.get());
+        } catch (Exception e) {
+            log.info("[ERROR] Exception500");
+            return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+        }
     }
 
     @Override

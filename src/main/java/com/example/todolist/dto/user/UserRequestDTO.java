@@ -28,4 +28,17 @@ public class UserRequestDTO {
             return new User(this.userEmail, this.userPassword);
         }
     }
+
+    // 회원 수정
+    @Data
+    public static class UserUpdateDTO {
+        private String userEmail; // 이메일
+        private String userPassword; // 비밀번호
+        private String userName; // 이름
+        private String userPhone; // 전화번호
+
+        public User toEntity() { // DTO를 User 엔티티로 변환하는 메소드
+            return new User(this.userEmail, this.userPassword, this.userName, this.userPhone);
+        }
+    }
 }
