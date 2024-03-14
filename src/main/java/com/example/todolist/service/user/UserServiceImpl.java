@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -37,7 +39,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDTO.UserLoginDTO login(UserRequestDTO.UserLoginDTO userLoginDTO) {
-        return null;
+        try {
+            User loginUser = userLoginDTO.toEntity();
+            Optional<User> optionalFindUser = userRepository.findByUserEmail(loginUser.getUserEmail());
+
+            if(!optionalFindUser.isPresent()) {
+                // 존재하지 않은 이메일
+                log.info("[ERROR] 존재하지 않은 이메일 입니다.");
+                return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+            }
+            if(loginUser.getUserPassword() != optionalFindUser.get().getUserPassword()) {
+                // 틀린 비밀번호
+                log.info("[ERROR] 틀린 비밀번호 입니다.");
+                return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+            }
+
+            return new UserResponseDTO.UserLoginDTO(loginUser);
+        } catch (Exception e) {
+            log.info("[ERROR] Exception500");
+            return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+        }
     }
 
     @Override

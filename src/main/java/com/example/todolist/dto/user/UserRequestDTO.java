@@ -24,9 +24,8 @@ public class UserRequestDTO {
         private String userEmail; // 이메일
         private String userPassword; // 비밀번호
 
-        public UserLoginDTO(User user) {
-            this.userEmail = user.getUserEmail();
-            this.userPassword = user.getUserPassword();
+        public User toEntity() { // DTO를 User 엔티티로 변환하는 메소드
+            return new User(this.userEmail, this.userPassword);
         }
     }
 }
