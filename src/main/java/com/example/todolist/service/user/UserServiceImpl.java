@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -124,7 +126,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDTO.UserFindAllDTO findAll(String userEmail) {
-        return null;
+    public UserResponseDTO.UserFindAllDTO findAll() {
+        try {
+            List<User> userList = userRepository.findAll();
+            List<UserResponseDTO.UserFindOneDTO> userFindOneDTOList = new ArrayList<>();
+
+            for(int i=0; i<userList.size(); i++) {
+                UserResponseDTO.UserFindOneDTO userFindOneDTO = new UserResponseDTO.UserFindOneDTO(userList.get(i));
+                userFindOneDTOList.add(userFindOneDTO);
+            }
+
+            return new UserResponseDTO.UserFindAllDTO(userFindOneDTOList);
+        } catch (Exception e) {
+            log.info("[ERROR] Exception500");
+            return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+        }
     }
 }

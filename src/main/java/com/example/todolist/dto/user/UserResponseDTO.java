@@ -96,5 +96,9 @@ public class UserResponseDTO {
     @Data
     public static class UserFindAllDTO {
         private List<UserFindOneDTO> userList;
+
+        public UserFindAllDTO(List<UserFindOneDTO> userFindOneDTOList) {
+            this.userList = userFindOneDTOList;
+        }
     }
 }

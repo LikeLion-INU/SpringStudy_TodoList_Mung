@@ -20,5 +20,5 @@ public interface UserService {
     UserResponseDTO.UserFindOneDTO findOne(Long userId);
 
     // 모든 회원 조회
-    UserResponseDTO.UserFindAllDTO findAll(String userEmail);
+    UserResponseDTO.UserFindAllDTO findAll();
 }
