@@ -3,9 +3,11 @@ package com.example.todolist.controller.member;
 import com.example.todolist.dto.member.MemberRequestDTO;
 import com.example.todolist.dto.member.MemberResponseDTO;
 import com.example.todolist.service.member.MemberServiceImpl;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -40,7 +42,7 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public String login(MemberRequestDTO.MemberLoginDTO memberLoginDTO) {
+    public String login(MemberRequestDTO.MemberLoginDTO memberLoginDTO, HttpSession httpSession) {
         try {
             log.info("[MemberController] login");
             MemberResponseDTO.MemberLoginDTO result = memberService.login(memberLoginDTO);
@@ -49,6 +51,9 @@ public class MemberController {
                 log.info("[ERROR] MemberController login");
                 return "home";
             }
+
+            httpSession.setAttribute("memberId", result.getId());
+
             return "main";
         } catch (Exception e) {
             log.info("[ERROR] Exception500");
@@ -56,32 +61,62 @@ public class MemberController {
         }
     }
 
-    @DeleteMapping("/delete/{memberId}")
-    public String delete(@PathVariable Long memberId) {
+    @DeleteMapping("/delete")
+    public String delete(HttpSession httpSession) {
         try {
             log.info("[MemberController] delete");
-            return "delete";
+            String result = memberService.delete((Long) httpSession.getAttribute("memberId"));
+
+            if(result == null) {
+                log.info("[ERROR] MemberController delete");
+                return "main";
+            }
+            return "home";
         } catch (Exception e) {
             log.info("[ERROR] Exception500");
             return null; // 알아보기 쉽게 null로 일단 하겠습니다!
         }
     }
 
-    @PutMapping("/update/{memberId}")
-    public String update(@PathVariable Long memberId) {
+    @GetMapping("/update")
+    public String update() {
+        return "update";
+    }
+
+    @PostMapping("/update")
+    public String update(MemberRequestDTO.MemberUpdateDTO memberUpdateDTO, HttpSession httpSession) {
         try {
             log.info("[MemberController] update");
-            return "update";
+
+            Long memberId = (Long) httpSession.getAttribute("memberId");
+
+            MemberResponseDTO.MemberUpdateDTO result = memberService.update(memberId, memberUpdateDTO);
+
+            if(result == null) {
+                log.info("[ERROR] MemberController update");
+                return "update";
+            }
+            return "main";
         } catch (Exception e) {
             log.info("[ERROR] Exception500");
             return null; // 알아보기 쉽게 null로 일단 하겠습니다!
         }
     }
 
-    @GetMapping("/findOne/{memberId}")
-    public String findOne(@PathVariable Long memberId) {
+    @GetMapping("/findOne")
+    public String findOne(HttpSession httpSession, Model model) {
         try {
             log.info("[MemberController] findOne");
+            Long memberId = (Long) httpSession.getAttribute("memberId");
+            MemberResponseDTO.MemberFindOneDTO result = memberService.findOne(memberId);
+
+            if(result == null) {
+                log.info("[ERROR] MemberController findOne");
+                return "main";
+            }
+
+            model.addAttribute("member", result);
+
             return "findOne";
         } catch (Exception e) {
             log.info("[ERROR] Exception500");
@@ -90,9 +125,11 @@ public class MemberController {
     }
 
     @GetMapping("/findAll")
-    public String findAll() {
+    public String findAll(Model model) {
         try {
             log.info("[MemberController] findAll");
+            MemberResponseDTO.MemberFindAllDTO result = memberService.findAll();
+            model.addAttribute("members", result);
             return "findAll";
         } catch (Exception e) {
             log.info("[ERROR] Exception500");

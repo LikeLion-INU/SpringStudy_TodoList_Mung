@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Member Information</title>
+</head>
+<body>
+<h1>Member Information</h1>
+<div>
+  <p>Member ID: <span th:text="${member.id}"></span></p>
+  <p>Email: <span th:text="${member.memberEmail}"></span></p>
+  <p>Password: <span th:text="${member.memberPassword}"></span></p>
+  <p>Name: <span th:text="${member.memberName}"></span></p>
+  <p>Phone: <span th:text="${member.memberPhone}"></span></p>
+</div>
+</body>
+</html>

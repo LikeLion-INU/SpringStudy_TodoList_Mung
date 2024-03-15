@@ -48,23 +48,22 @@ public class MemberServiceImpl implements MemberService {
     public MemberResponseDTO.MemberLoginDTO login(MemberRequestDTO.MemberLoginDTO memberLoginDTO) {
         try {
             log.info("[MemberServiceImpl] login");
-            Member loginMember = memberLoginDTO.toEntity();
-            Optional<Member> optionalFindMember = memberRepository.findByMemberEmail(loginMember.getMemberEmail()); // DB에서 회원 조회
+            Optional<Member> optionalFindMember = memberRepository.findByMemberEmail(memberLoginDTO.getMemberEmail()); // DB에서 회원 조회
 
             if(!optionalFindMember.isPresent()) {
                 // 존재하지 않은 이메일
                 log.info("[ERROR] 존재하지 않은 이메일 입니다.");
                 return null; // 알아보기 쉽게 null로 일단 하겠습니다!
             }
-            else if(!Objects.equals(loginMember.getMemberPassword(), optionalFindMember.get().getMemberPassword())) {
+            else if(!Objects.equals(memberLoginDTO.getMemberPassword(), optionalFindMember.get().getMemberPassword())) {
                 // 틀린 비밀번호
                 log.info("[ERROR] 틀린 비밀번호 입니다.");
-                System.out.println(loginMember.getMemberPassword());
+                System.out.println(memberLoginDTO.getMemberPassword());
                 System.out.println(optionalFindMember.get().getMemberPassword());
                 return null; // 알아보기 쉽게 null로 일단 하겠습니다!
             }
 
-            return new MemberResponseDTO.MemberLoginDTO(loginMember);
+            return new MemberResponseDTO.MemberLoginDTO(optionalFindMember.get());
         } catch (Exception e) {
             log.info("[ERROR] Exception500");
             return null; // 알아보기 쉽게 null로 일단 하겠습니다!
@@ -95,10 +94,10 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public MemberResponseDTO.MemberUpdateDTO update(MemberRequestDTO.MemberUpdateDTO memberUpdateDTO) {
+    public MemberResponseDTO.MemberUpdateDTO update(Long memberId, MemberRequestDTO.MemberUpdateDTO memberUpdateDTO) {
         try {
             log.info("[MemberServiceImpl] update");
-            Optional<Member> optionalFindMember = memberRepository.findByMemberEmail(memberUpdateDTO.getMemberEmail()); // DB에서 회원 조회
+            Optional<Member> optionalFindMember = memberRepository.findById(memberId); // DB에서 회원 조회
 
             if(!optionalFindMember.isPresent()) {
                 // 존재하지 않은 이메일
@@ -120,6 +119,7 @@ public class MemberServiceImpl implements MemberService {
     public MemberResponseDTO.MemberFindOneDTO findOne(Long memberId) {
         try {
             log.info("[MemberServiceImpl] findOne");
+
             Optional<Member> optionalFindMember = memberRepository.findById(memberId); // DB에서 회원 조회
 
             if(!optionalFindMember.isPresent()) {

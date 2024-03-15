@@ -14,7 +14,7 @@ public interface MemberService {
     String delete(Long userId);
 
     // 회원 수정
-    MemberResponseDTO.MemberUpdateDTO update(MemberRequestDTO.MemberUpdateDTO memberUpdateDTO);
+    MemberResponseDTO.MemberUpdateDTO update(Long memberId, MemberRequestDTO.MemberUpdateDTO memberUpdateDTO);
 
     // 내 정보 조회
     MemberResponseDTO.MemberFindOneDTO findOne(Long memberId);
