@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Join</title>
+</head>
+<body>
+
+<div class="container">
+    <div>
+        <h1>Hello Spring</h1>
+        <form action="/member/join" method="post">
+            <input type="text" id="memberEmail" name="memberEmail" placeholder="이메일 입력해주세요."> <br>
+            <input type="text" id="memberPassword" name="memberPassword" placeholder="비밀번호 입력해주세요."> <br>
+            <input type="text" id="memberName" name="memberName" placeholder="이름 입력해주세요."> <br>
+            <input type="text" id="memberPhone" name="memberPhone" placeholder="전화번호 입력해주세요."> <br>
+            <button type="submit">회원 가입</button>
+        </form>
+    </div>
+    <div>
+        <a href="/home">뒤로 가기</a>
+    </div>
+</div> <!-- /container -->
+
+</body>
+</html>

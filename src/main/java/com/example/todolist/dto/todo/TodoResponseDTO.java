@@ -1,7 +1,5 @@
 package com.example.todolist.dto.todo;
 
-import com.example.todolist.entity.todo.Todo;
-import com.example.todolist.entity.user.User;
 import lombok.Data;
 
 @Data
