@@ -13,6 +13,8 @@ public class Todo extends BaseEntity {
     @Column(name = "todo_id")
     private Long id; // 고유 식별자
     private String todoName; // 투두 제목
+
+    @Enumerated(EnumType.STRING)
     private TodoStatus todoStatus = TodoStatus.NOT_FINISH; // 투두 상태
 
     @ManyToOne(fetch = FetchType.LAZY)

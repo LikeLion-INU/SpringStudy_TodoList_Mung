@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TodoList</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    .toggle-button {
+      padding: 5px 10px;
+      cursor: pointer;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+    }
+    .delete-button {
+      padding: 5px 10px;
+      cursor: pointer;
+      border: none;
+      background-color: #f44336;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+<form th:action="@{/todo/create}" method="post">
+  <input type="text" name="todoName" placeholder="할 일을 입력하세요">
+  <button type="submit">추가</button>
+</form>
+
+<br>
+
+<table>
+  <tr>
+    <th>번호</th>
+    <th>할 일</th>
+    <th>수정</th>
+    <th>삭제</th>
+    <th>해결 여부</th>
+  </tr>
+  <!-- Loop through todos -->
+  <tr th:each="todo : ${todos.todoList}">
+    <td th:text="${todo.id}"></td>
+    <td th:text="${todo.todoName}"></td>
+    <td>
+      <form th:action="@{'/todo/update/' + ${todo.id}}" method="post">
+        <input type="text" name="todoName" placeholder="수정할 내용 입력">
+        <input type="hidden" name="todoId" th:value="${todo.id}">
+        <button type="submit">수정</button>
+      </form>
+    </td>
+    <td>
+      <form th:action="@{'/todo/delete/' + ${todo.id}}" method="post">
+        <input type="hidden" name="todoId" th:value="${todo.id}">
+        <button class="delete-button" type="submit">삭제</button>
+      </form>
+    </td>
+    <td>
+      <form th:action="@{'/todo/toggle/' + ${todo.id}}" method="post">
+        <button class="toggle-button" type="submit"
+                th:style="${todo.todoStatus == T(com.example.todolist.entity.todo.TodoStatus).FINISH ? 'background-color: green' : 'background-color: red'}"
+                th:text="${todo.todoStatus == T(com.example.todolist.entity.todo.TodoStatus).FINISH ? '해결' : '미해결'}"></button>
+      </form>
+    </td>
+  </tr>
+  <!-- End loop -->
+</table>
+</body>
+</html>

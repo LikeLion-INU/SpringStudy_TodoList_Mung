@@ -61,13 +61,13 @@ public class MemberController {
         }
     }
 
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     public String delete(HttpSession httpSession) {
         try {
             log.info("[MemberController] delete");
             String result = memberService.delete((Long) httpSession.getAttribute("memberId"));
 
-            if(result == null) {
+            if(result != "SUCCESS") {
                 log.info("[ERROR] MemberController delete");
                 return "main";
             }

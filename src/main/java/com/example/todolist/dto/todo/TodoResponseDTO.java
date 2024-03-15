@@ -71,9 +71,9 @@ public class TodoResponseDTO {
     }
     @Data
     public static class TodoFindAllDTO {
-        private List<TodoFindOneDTO> toodList;
+        private List<TodoFindOneDTO> todoList;
         public TodoFindAllDTO(List<TodoFindOneDTO> todoFindOneDTOList) {
-            this.toodList = todoFindOneDTOList;
+            this.todoList = todoFindOneDTOList;
         }
     }
 }
