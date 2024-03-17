@@ -1,5 +1,7 @@
 package com.example.todolist.service.todo;
 
+import com.example.todolist.common.exception.CustomException;
+import com.example.todolist.common.response.ErrorCode;
 import com.example.todolist.dto.todo.TodoRequestDTO;
 import com.example.todolist.dto.todo.TodoResponseDTO;
 import com.example.todolist.entity.member.Member;
@@ -41,7 +43,7 @@ public class TodoServiceImpl implements TodoService {
             return new TodoResponseDTO.TodoCreateDTO(todo);
         } catch (Exception e) {
             log.info("[ERROR] Exception500");
-            return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+            throw new CustomException(ErrorCode.SERVER_ERROR);
         }
     }
 
@@ -52,12 +54,9 @@ public class TodoServiceImpl implements TodoService {
             log.info("[TodoServiceImpl] update");
 
             Member findMember = getMember_memberId(memberId);
-            if(findMember == null) return null;
-
             Todo findTodo = getTodo_todoId(todoId);
-            if(findTodo == null) return null;
 
-            if (!checkMemberRelationTodo(findMember, findTodo)) return null;
+            checkMemberRelationTodo(findMember, findTodo);
 
             // 업데이트 하기
             findTodo.todoUpdate(todoUpdateDTO.getTodoName());
@@ -65,7 +64,7 @@ public class TodoServiceImpl implements TodoService {
             return new TodoResponseDTO.TodoUpdateDTO(findTodo);
         } catch (Exception e) {
             log.info("[ERROR] Exception500");
-            return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+            throw new CustomException(ErrorCode.SERVER_ERROR);
         }
     }
 
@@ -76,19 +75,16 @@ public class TodoServiceImpl implements TodoService {
             log.info("[TodoServiceImpl] toggle");
 
             Member findMember = getMember_memberId(memberId);
-            if(findMember == null) return null;
-
             Todo findTodo = getTodo_todoId(todoId);
-            if(findTodo == null) return null;
 
-            if (!checkMemberRelationTodo(findMember, findTodo)) return null;
+            checkMemberRelationTodo(findMember, findTodo);
 
             toggleTodo(findTodo);
 
             return new TodoResponseDTO.TodoToggleDTO(findTodo);
         } catch (Exception e) {
             log.info("[ERROR] Exception500");
-            return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+            throw new CustomException(ErrorCode.SERVER_ERROR);
         }
 
     }
@@ -100,19 +96,16 @@ public class TodoServiceImpl implements TodoService {
             log.info("[TodoServiceImpl] delete");
 
             Member findMember = getMember_memberId(memberId);
-            if(findMember == null) return null;
-
             Todo findTodo = getTodo_todoId(todoId);
-            if(findTodo == null) return null;
 
-            if (!checkMemberRelationTodo(findMember, findTodo)) return null;
+            checkMemberRelationTodo(findMember, findTodo);
 
             todoRepository.deleteById(todoId);
 
             return "SUCCESS";
         } catch (Exception e) {
             log.info("[ERROR] Exception500");
-            return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+            throw new CustomException(ErrorCode.SERVER_ERROR);
         }
     }
 
@@ -122,7 +115,6 @@ public class TodoServiceImpl implements TodoService {
             log.info("[TodoServiceImpl] findAll");
 
             Member findMember = getMember_memberId(memberId);
-            if(findMember == null) return null;
 
             List<Todo> todoList = todoRepository.findByMemberId(memberId);
             List<TodoResponseDTO.TodoFindOneDTO> todoFindOneDTOList = new ArrayList<>();
@@ -135,38 +127,37 @@ public class TodoServiceImpl implements TodoService {
             return new TodoResponseDTO.TodoFindAllDTO(todoFindOneDTOList);
         } catch (Exception e) {
             log.info("[ERROR] Exception500");
-            return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+            throw new CustomException(ErrorCode.SERVER_ERROR);
         }
     }
 
-    private Member getMember_memberId(Long memberId) {
+    private Member getMember_memberId(Long memberId) throws CustomException {
         Optional<Member> optionalFindMember = memberRepository.findById(memberId);
-        if(!optionalFindMember.isPresent()) {
+        if(optionalFindMember.isEmpty()) {
             log.info("[ERROR] 존재하지 않은 회원 입니다.");
-            return null;
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
         return optionalFindMember.get();
     }
-    private static void toggleTodo(Todo findTodo) {
+    private void toggleTodo(Todo findTodo) throws CustomException {
         if(findTodo.getTodoStatus() == TodoStatus.NOT_FINISH) {
             findTodo.updateTodoStatus(FINISH);
         } else {
             findTodo.updateTodoStatus(NOT_FINISH);
         }
     }
-    private Todo getTodo_todoId(Long todoId) {
+    private Todo getTodo_todoId(Long todoId) throws CustomException {
         Optional<Todo> optionalFindTodo = todoRepository.findById(todoId);
-        if(!optionalFindTodo.isPresent()) {
+        if(optionalFindTodo.isEmpty()) {
             log.info("[ERROR] 존재하지 않은 투두 입니다.");
-            return null;
+            throw new CustomException(ErrorCode.TODO_NOT_FOUND);
         }
         return optionalFindTodo.get();
     }
-    private static boolean checkMemberRelationTodo(Member findMember, Todo findTodo) {
+    private static void checkMemberRelationTodo(Member findMember, Todo findTodo) throws CustomException {
         if(!Objects.equals(findMember.getId(), findTodo.getMember().getId())) {
             log.info("[ERROR] 투두의 주인이 아닙니다.");
-            return false;
+            throw new CustomException(ErrorCode.ACCESS_DENIAL);
         }
-        return true;
     }
 }

@@ -1,5 +1,7 @@
 package com.example.todolist.service.member;
 
+import com.example.todolist.common.exception.CustomException;
+import com.example.todolist.common.response.ErrorCode;
 import com.example.todolist.dto.member.MemberRequestDTO;
 import com.example.todolist.dto.member.MemberResponseDTO;
 import com.example.todolist.entity.member.Member;
@@ -32,7 +34,7 @@ public class MemberServiceImpl implements MemberService {
             if(optionalFindMember.isPresent()) {
                 // 중복 이메일 발생
                 log.info("[ERROR] 중복 이메일 입니다.");
-                return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+                throw new CustomException(ErrorCode.EMAIL_EXIST);
             }
 
             memberRepository.save(member); // 중복 이메일이 없다면 DB에 저장하기.
@@ -40,7 +42,7 @@ public class MemberServiceImpl implements MemberService {
             return new MemberResponseDTO.MemberJoinDTO(member);
         } catch (Exception e) {
             log.info("[ERROR] Exception500");
-            return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+            throw new CustomException(ErrorCode.SERVER_ERROR);
         }
     }
 
@@ -50,7 +52,7 @@ public class MemberServiceImpl implements MemberService {
             log.info("[MemberServiceImpl] login");
             Optional<Member> optionalFindMember = memberRepository.findByMemberEmail(memberLoginDTO.getMemberEmail()); // DB에서 회원 조회
 
-            if(!optionalFindMember.isPresent()) {
+            if(optionalFindMember.isEmpty()) {
                 // 존재하지 않은 이메일
                 log.info("[ERROR] 존재하지 않은 이메일 입니다.");
                 return null; // 알아보기 쉽게 null로 일단 하겠습니다!
@@ -66,7 +68,7 @@ public class MemberServiceImpl implements MemberService {
             return new MemberResponseDTO.MemberLoginDTO(optionalFindMember.get());
         } catch (Exception e) {
             log.info("[ERROR] Exception500");
-            return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+            throw new CustomException(ErrorCode.SERVER_ERROR);
         }
     }
 
@@ -77,7 +79,7 @@ public class MemberServiceImpl implements MemberService {
             log.info("[MemberServiceImpl] delete");
             Optional<Member> optionalFindMember = memberRepository.findById(memberId);
 
-            if(!optionalFindMember.isPresent()) {
+            if(optionalFindMember.isEmpty()) {
                 // 존재하지 않은 이메일
                 log.info("[ERROR] 존재하지 않은 회원 입니다.");
                 return null; // 알아보기 쉽게 null로 일단 하겠습니다!
@@ -88,7 +90,7 @@ public class MemberServiceImpl implements MemberService {
             return "SUCCESS";
         } catch (Exception e) {
             log.info("[ERROR] Exception500");
-            return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+            throw new CustomException(ErrorCode.SERVER_ERROR);
         }
     }
 
@@ -102,7 +104,7 @@ public class MemberServiceImpl implements MemberService {
             if(!optionalFindMember.isPresent()) {
                 // 존재하지 않은 이메일
                 log.info("[ERROR] 존재하지 않은 이메일 입니다.");
-                return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+                throw new CustomException(ErrorCode.SERVER_ERROR);
             }
 
             // 회원 수정 과정 진행
@@ -122,16 +124,16 @@ public class MemberServiceImpl implements MemberService {
 
             Optional<Member> optionalFindMember = memberRepository.findById(memberId); // DB에서 회원 조회
 
-            if(!optionalFindMember.isPresent()) {
+            if(optionalFindMember.isEmpty()) {
                 // 존재하지 않은 이메일
                 log.info("[ERROR] 존재하지 않은 회원 입니다.");
-                return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+                throw new CustomException(ErrorCode.EMAIL_NOT_FOUND);
             }
 
             return new MemberResponseDTO.MemberFindOneDTO(optionalFindMember.get());
         } catch (Exception e) {
             log.info("[ERROR] Exception500");
-            return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+            throw new CustomException(ErrorCode.SERVER_ERROR);
         }
     }
 
@@ -150,7 +152,7 @@ public class MemberServiceImpl implements MemberService {
             return new MemberResponseDTO.MemberFindAllDTO(memberFindOneDTOList);
         } catch (Exception e) {
             log.info("[ERROR] Exception500");
-            return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+            throw new CustomException(ErrorCode.SERVER_ERROR);
         }
     }
 }
