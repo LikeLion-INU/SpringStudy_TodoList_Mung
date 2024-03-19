@@ -55,14 +55,11 @@ public class MemberServiceImpl implements MemberService {
             if(optionalFindMember.isEmpty()) {
                 // 존재하지 않은 이메일
                 log.info("[ERROR] 존재하지 않은 이메일 입니다.");
-                return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+                throw new CustomException(ErrorCode.EMAIL_NOT_FOUND);
             }
             else if(!Objects.equals(memberLoginDTO.getMemberPassword(), optionalFindMember.get().getMemberPassword())) {
                 // 틀린 비밀번호
-                log.info("[ERROR] 틀린 비밀번호 입니다.");
-                System.out.println(memberLoginDTO.getMemberPassword());
-                System.out.println(optionalFindMember.get().getMemberPassword());
-                return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+                throw new CustomException(ErrorCode.PASSWORD_NOT_FOUND);
             }
 
             return new MemberResponseDTO.MemberLoginDTO(optionalFindMember.get());
@@ -82,7 +79,7 @@ public class MemberServiceImpl implements MemberService {
             if(optionalFindMember.isEmpty()) {
                 // 존재하지 않은 이메일
                 log.info("[ERROR] 존재하지 않은 회원 입니다.");
-                return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+                throw new CustomException(ErrorCode.EMAIL_NOT_FOUND);
             }
 
             memberRepository.deleteById(memberId); // DB에서 회원 삭제
@@ -104,7 +101,7 @@ public class MemberServiceImpl implements MemberService {
             if(!optionalFindMember.isPresent()) {
                 // 존재하지 않은 이메일
                 log.info("[ERROR] 존재하지 않은 이메일 입니다.");
-                throw new CustomException(ErrorCode.SERVER_ERROR);
+                throw new CustomException(ErrorCode.EMAIL_NOT_FOUND);
             }
 
             // 회원 수정 과정 진행
@@ -113,7 +110,7 @@ public class MemberServiceImpl implements MemberService {
             return new MemberResponseDTO.MemberUpdateDTO(optionalFindMember.get());
         } catch (Exception e) {
             log.info("[ERROR] Exception500");
-            return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+            throw new CustomException(ErrorCode.SERVER_ERROR);
         }
     }
 
