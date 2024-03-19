@@ -40,9 +40,12 @@ public class MemberServiceImpl implements MemberService {
             memberRepository.save(member); // 중복 이메일이 없다면 DB에 저장하기.
 
             return new MemberResponseDTO.MemberJoinDTO(member);
-        } catch (Exception e) {
-            log.info("[ERROR] Exception500");
-            throw new CustomException(ErrorCode.SERVER_ERROR);
+        } catch (CustomException ce){
+            log.info("[CustomException] MemberServiceImpl join");
+            throw ce;
+        } catch (Exception e){
+            log.info("[Exception500] MemberServiceImpl join");
+            throw new CustomException(ErrorCode.SERVER_ERROR, "MemberServiceImpl join : " + e.getMessage());
         }
     }
 
@@ -63,9 +66,12 @@ public class MemberServiceImpl implements MemberService {
             }
 
             return new MemberResponseDTO.MemberLoginDTO(optionalFindMember.get());
-        } catch (Exception e) {
-            log.info("[ERROR] Exception500");
-            throw new CustomException(ErrorCode.SERVER_ERROR);
+        } catch (CustomException ce){
+            log.info("[CustomException] MemberServiceImpl login");
+            throw ce;
+        } catch (Exception e){
+            log.info("[Exception500] MemberServiceImpl login");
+            throw new CustomException(ErrorCode.SERVER_ERROR, "MemberServiceImpl login : " + e.getMessage());
         }
     }
 
@@ -85,9 +91,12 @@ public class MemberServiceImpl implements MemberService {
             memberRepository.deleteById(memberId); // DB에서 회원 삭제
 
             return "SUCCESS";
-        } catch (Exception e) {
-            log.info("[ERROR] Exception500");
-            throw new CustomException(ErrorCode.SERVER_ERROR);
+        } catch (CustomException ce){
+            log.info("[CustomException] MemberServiceImpl delete");
+            throw ce;
+        } catch (Exception e){
+            log.info("[Exception500] MemberServiceImpl delete");
+            throw new CustomException(ErrorCode.SERVER_ERROR, "MemberServiceImpl delete : " + e.getMessage());
         }
     }
 
@@ -108,9 +117,12 @@ public class MemberServiceImpl implements MemberService {
             optionalFindMember.get().memberUpdate(memberUpdateDTO);
 
             return new MemberResponseDTO.MemberUpdateDTO(optionalFindMember.get());
-        } catch (Exception e) {
-            log.info("[ERROR] Exception500");
-            throw new CustomException(ErrorCode.SERVER_ERROR);
+        } catch (CustomException ce){
+            log.info("[CustomException] MemberServiceImpl update");
+            throw ce;
+        } catch (Exception e){
+            log.info("[Exception500] MemberServiceImpl update");
+            throw new CustomException(ErrorCode.SERVER_ERROR, "MemberServiceImpl update : " + e.getMessage());
         }
     }
 
@@ -128,9 +140,12 @@ public class MemberServiceImpl implements MemberService {
             }
 
             return new MemberResponseDTO.MemberFindOneDTO(optionalFindMember.get());
-        } catch (Exception e) {
-            log.info("[ERROR] Exception500");
-            throw new CustomException(ErrorCode.SERVER_ERROR);
+        } catch (CustomException ce){
+            log.info("[CustomException] MemberServiceImpl findOne");
+            throw ce;
+        } catch (Exception e){
+            log.info("[Exception500] MemberServiceImpl findOne");
+            throw new CustomException(ErrorCode.SERVER_ERROR, "MemberServiceImpl findOne : " + e.getMessage());
         }
     }
 
@@ -147,9 +162,12 @@ public class MemberServiceImpl implements MemberService {
             }
 
             return new MemberResponseDTO.MemberFindAllDTO(memberFindOneDTOList);
-        } catch (Exception e) {
-            log.info("[ERROR] Exception500");
-            throw new CustomException(ErrorCode.SERVER_ERROR);
+        } catch (CustomException ce){
+            log.info("[CustomException] MemberServiceImpl findAll");
+            throw ce;
+        } catch (Exception e){
+            log.info("[Exception500] MemberServiceImpl findAll");
+            throw new CustomException(ErrorCode.SERVER_ERROR, "MemberServiceImpl findAll : " + e.getMessage());
         }
     }
 }
