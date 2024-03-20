@@ -1,4 +1,12 @@
 package com.example.todolist.repository.member;
 
+import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+
 public class MemberRepositoryImpl implements MemberRepositoryCustom {
+    private final JPAQueryFactory queryFactory;
+    public MemberRepositoryImpl(EntityManager em) {
+        this.queryFactory = new JPAQueryFactory(em);
+    }
 }

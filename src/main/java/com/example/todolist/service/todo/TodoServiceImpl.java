@@ -125,17 +125,9 @@ public class TodoServiceImpl implements TodoService {
         try {
             log.info("[TodoServiceImpl] findAll");
 
-            Member findMember = getMember_memberId(memberId);
+            TodoResponseDTO.TodoFindAllDTO todoList = todoRepository.findAllCustom(memberId);
 
-            List<Todo> todoList = todoRepository.findByMemberId(memberId);
-            List<TodoResponseDTO.TodoFindOneDTO> todoFindOneDTOList = new ArrayList<>();
-
-            for(int i=0; i<todoList.size(); i++) {
-                TodoResponseDTO.TodoFindOneDTO todoFindOneDTO = new TodoResponseDTO.TodoFindOneDTO(todoList.get(i));
-                todoFindOneDTOList.add(todoFindOneDTO);
-            }
-
-            return new TodoResponseDTO.TodoFindAllDTO(todoFindOneDTOList);
+            return todoList;
         } catch (CustomException ce){
             log.info("[CustomException] TodoServiceImpl findAll");
             throw ce;
