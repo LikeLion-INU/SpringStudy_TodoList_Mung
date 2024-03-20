@@ -41,9 +41,12 @@ public class TodoServiceImpl implements TodoService {
             todoRepository.save(todo);
 
             return new TodoResponseDTO.TodoCreateDTO(todo);
-        } catch (Exception e) {
-            log.info("[ERROR] Exception500");
-            throw new CustomException(ErrorCode.SERVER_ERROR);
+        } catch (CustomException ce){
+            log.info("[CustomException] TodoServiceImpl create");
+            throw ce;
+        } catch (Exception e){
+            log.info("[Exception500] TodoServiceImpl create");
+            throw new CustomException(ErrorCode.SERVER_ERROR, "TodoServiceImpl create : " + e.getMessage());
         }
     }
 
@@ -62,9 +65,12 @@ public class TodoServiceImpl implements TodoService {
             findTodo.todoUpdate(todoUpdateDTO.getTodoName());
 
             return new TodoResponseDTO.TodoUpdateDTO(findTodo);
-        } catch (Exception e) {
-            log.info("[ERROR] Exception500");
-            throw new CustomException(ErrorCode.SERVER_ERROR);
+        } catch (CustomException ce){
+            log.info("[CustomException] TodoServiceImpl update");
+            throw ce;
+        } catch (Exception e){
+            log.info("[Exception500] TodoServiceImpl update");
+            throw new CustomException(ErrorCode.SERVER_ERROR, "TodoServiceImpl update : " + e.getMessage());
         }
     }
 
@@ -82,11 +88,13 @@ public class TodoServiceImpl implements TodoService {
             toggleTodo(findTodo);
 
             return new TodoResponseDTO.TodoToggleDTO(findTodo);
-        } catch (Exception e) {
-            log.info("[ERROR] Exception500");
-            throw new CustomException(ErrorCode.SERVER_ERROR);
+        } catch (CustomException ce){
+            log.info("[CustomException] TodoServiceImpl toggle");
+            throw ce;
+        } catch (Exception e){
+            log.info("[Exception500] TodoServiceImpl toggle");
+            throw new CustomException(ErrorCode.SERVER_ERROR, "TodoServiceImpl toggle : " + e.getMessage());
         }
-
     }
 
     @Override
@@ -103,9 +111,12 @@ public class TodoServiceImpl implements TodoService {
             todoRepository.deleteById(todoId);
 
             return "SUCCESS";
-        } catch (Exception e) {
-            log.info("[ERROR] Exception500");
-            throw new CustomException(ErrorCode.SERVER_ERROR);
+        } catch (CustomException ce){
+            log.info("[CustomException] TodoServiceImpl delete");
+            throw ce;
+        } catch (Exception e){
+            log.info("[Exception500] TodoServiceImpl delete");
+            throw new CustomException(ErrorCode.SERVER_ERROR, "TodoServiceImpl delete : " + e.getMessage());
         }
     }
 
@@ -114,20 +125,15 @@ public class TodoServiceImpl implements TodoService {
         try {
             log.info("[TodoServiceImpl] findAll");
 
-            Member findMember = getMember_memberId(memberId);
+            TodoResponseDTO.TodoFindAllDTO todoList = todoRepository.findAllCustom(memberId);
 
-            List<Todo> todoList = todoRepository.findByMemberId(memberId);
-            List<TodoResponseDTO.TodoFindOneDTO> todoFindOneDTOList = new ArrayList<>();
-
-            for(int i=0; i<todoList.size(); i++) {
-                TodoResponseDTO.TodoFindOneDTO todoFindOneDTO = new TodoResponseDTO.TodoFindOneDTO(todoList.get(i));
-                todoFindOneDTOList.add(todoFindOneDTO);
-            }
-
-            return new TodoResponseDTO.TodoFindAllDTO(todoFindOneDTOList);
-        } catch (Exception e) {
-            log.info("[ERROR] Exception500");
-            throw new CustomException(ErrorCode.SERVER_ERROR);
+            return todoList;
+        } catch (CustomException ce){
+            log.info("[CustomException] TodoServiceImpl findAll");
+            throw ce;
+        } catch (Exception e){
+            log.info("[Exception500] TodoServiceImpl findAll");
+            throw new CustomException(ErrorCode.SERVER_ERROR, "TodoServiceImpl findAll : " + e.getMessage());
         }
     }
 
