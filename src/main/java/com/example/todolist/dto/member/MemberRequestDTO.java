@@ -24,9 +24,6 @@ public class MemberRequestDTO {
         private String memberEmail; // 이메일
         private String memberPassword; // 비밀번호
 
-        public Member toEntity() { // DTO를 Member 엔티티로 변환하는 메소드
-            return new Member(this.memberEmail, this.memberPassword);
-        }
     }
 
     // 회원 수정

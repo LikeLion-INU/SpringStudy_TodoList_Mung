@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface TodoRepository extends JpaRepository<Todo, Long>, TodoRepositoryCustom {
     List<Todo> findByMemberId(Long memberId);
+    void deleteByMemberId(Long memberId);
 }

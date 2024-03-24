@@ -6,6 +6,7 @@ import com.example.todolist.dto.member.MemberRequestDTO;
 import com.example.todolist.dto.member.MemberResponseDTO;
 import com.example.todolist.entity.member.Member;
 import com.example.todolist.repository.member.MemberRepository;
+import com.example.todolist.repository.todo.TodoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -22,6 +24,7 @@ import java.util.Optional;
 @Slf4j
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
+    private final TodoRepository todoRepository;
     @Override
     @Transactional
     public MemberResponseDTO.MemberJoinDTO join(MemberRequestDTO.MemberJoinDTO memberJoinDTO) {
@@ -50,6 +53,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public MemberResponseDTO.MemberLoginDTO login(MemberRequestDTO.MemberLoginDTO memberLoginDTO) {
         try {
             log.info("[MemberServiceImpl] login");
@@ -88,6 +92,7 @@ public class MemberServiceImpl implements MemberService {
                 throw new CustomException(ErrorCode.EMAIL_NOT_FOUND);
             }
 
+//            todoRepository.deleteByMemberId(memberId);
             memberRepository.deleteById(memberId); // DB에서 회원 삭제
 
             return "SUCCESS";
@@ -154,12 +159,16 @@ public class MemberServiceImpl implements MemberService {
         try {
             log.info("[MemberServiceImpl] findAll");
             List<Member> memberList = memberRepository.findAll();
-            List<MemberResponseDTO.MemberFindOneDTO> memberFindOneDTOList = new ArrayList<>();
+//            List<MemberResponseDTO.MemberFindOneDTO> memberFindOneDTOList = new ArrayList<>();
+//
+//            for(int i = 0; i< memberList.size(); i++) {
+//                MemberResponseDTO.MemberFindOneDTO memberFindOneDTO = new MemberResponseDTO.MemberFindOneDTO(memberList.get(i));
+//                memberFindOneDTOList.add(memberFindOneDTO);
+//            }
 
-            for(int i = 0; i< memberList.size(); i++) {
-                MemberResponseDTO.MemberFindOneDTO memberFindOneDTO = new MemberResponseDTO.MemberFindOneDTO(memberList.get(i));
-                memberFindOneDTOList.add(memberFindOneDTO);
-            }
+            List<MemberResponseDTO.MemberFindOneDTO> memberFindOneDTOList = memberList.stream()
+                    .map(MemberResponseDTO.MemberFindOneDTO::new)
+                    .collect(Collectors.toList());
 
             return new MemberResponseDTO.MemberFindAllDTO(memberFindOneDTOList);
         } catch (CustomException ce){
