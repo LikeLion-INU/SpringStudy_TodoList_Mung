@@ -10,10 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -22,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class TodoController {
     private final TodoServiceImpl todoService;
     @PostMapping("/create")
-    public String create(TodoRequestDTO.TodoCreateDTO todoCreateDTO, HttpSession httpSession) {
+    public String create(@ModelAttribute TodoRequestDTO.TodoCreateDTO todoCreateDTO, HttpSession httpSession) {
         try {
             log.info("[TodoController] create");
             Long memberId = (Long) httpSession.getAttribute("memberId");
@@ -38,7 +35,7 @@ public class TodoController {
     }
 
     @PostMapping("/update/{todoId}")
-    public String update(TodoRequestDTO.TodoUpdateDTO todoUpdateDTO, @PathVariable("todoId") Long todoId, HttpSession httpSession) {
+    public String update(@ModelAttribute TodoRequestDTO.TodoUpdateDTO todoUpdateDTO, @PathVariable("todoId") Long todoId, HttpSession httpSession) {
         try {
             log.info("[TodoController] update");
             Long memberId = (Long) httpSession.getAttribute("memberId");

@@ -1,6 +1,5 @@
 package com.example.todolist.repository.member;
 
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 

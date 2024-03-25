@@ -22,7 +22,7 @@ public class MemberController {
         return "join";
     }
     @PostMapping("/join")
-    public String join(MemberRequestDTO.MemberJoinDTO memberJoinDTO) {
+    public String join(@ModelAttribute MemberRequestDTO.MemberJoinDTO memberJoinDTO) {
         try {
             log.info("[MemberController] join");
 
@@ -42,7 +42,7 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public String login(MemberRequestDTO.MemberLoginDTO memberLoginDTO, HttpSession httpSession) {
+    public String login(@ModelAttribute MemberRequestDTO.MemberLoginDTO memberLoginDTO, HttpSession httpSession) {
         try {
             log.info("[MemberController] login");
             MemberResponseDTO.MemberLoginDTO result = memberService.login(memberLoginDTO);
@@ -60,7 +60,10 @@ public class MemberController {
             return null; // 알아보기 쉽게 null로 일단 하겠습니다!
         }
     }
-
+    @GetMapping("/delete")
+    public String delete() {
+        return "home";
+    }
     @PostMapping("/delete")
     public String delete(HttpSession httpSession) {
         try {
@@ -84,7 +87,7 @@ public class MemberController {
     }
 
     @PostMapping("/update")
-    public String update(MemberRequestDTO.MemberUpdateDTO memberUpdateDTO, HttpSession httpSession) {
+    public String update(@ModelAttribute MemberRequestDTO.MemberUpdateDTO memberUpdateDTO, HttpSession httpSession) {
         try {
             log.info("[MemberController] update");
 
