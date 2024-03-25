@@ -92,7 +92,7 @@ public class MemberServiceImpl implements MemberService {
                 throw new CustomException(ErrorCode.EMAIL_NOT_FOUND);
             }
 
-//            todoRepository.deleteByMemberId(memberId);
+            todoRepository.deleteByMemberId(memberId);
             memberRepository.deleteById(memberId); // DB에서 회원 삭제
 
             return "SUCCESS";
