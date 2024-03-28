@@ -34,10 +34,12 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?>  login(@ModelAttribute MemberRequestDTO.MemberLoginDTO memberLoginDTO, HttpSession httpSession) {
+    public ResponseEntity<?>  login(@RequestBody MemberRequestDTO.MemberLoginDTO memberLoginDTO, HttpSession httpSession) {
         try {
             log.info("[MemberController] login");
             MemberResponseDTO.MemberLoginDTO result = memberService.login(memberLoginDTO);
+
+            httpSession.setAttribute("memberId", result.getId());
 
             return ResponseEntity.ok().body(ApiResponse.SUCCESS(HttpStatus.CREATED.value(), "member login success", result));
         } catch (Exception500 e) {
@@ -58,7 +60,7 @@ public class MemberController {
     }
 
     @PostMapping("/update")
-    public ResponseEntity<?> update(@ModelAttribute MemberRequestDTO.MemberUpdateDTO memberUpdateDTO, HttpSession httpSession) {
+    public ResponseEntity<?> update(@RequestBody MemberRequestDTO.MemberUpdateDTO memberUpdateDTO, HttpSession httpSession) {
         try {
             log.info("[MemberController] update");
             Long memberId = (Long) httpSession.getAttribute("memberId");

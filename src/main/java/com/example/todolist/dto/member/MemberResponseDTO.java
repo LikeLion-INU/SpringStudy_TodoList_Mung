@@ -21,6 +21,7 @@ public class MemberResponseDTO {
             this.memberEmail = member.getMemberEmail();
             this.memberPassword = member.getMemberPassword();
             this.memberName = member.getMemberName();
+            this.memberPhone = member.getMemberPhone();
         }
     }
 
@@ -38,6 +39,7 @@ public class MemberResponseDTO {
             this.memberEmail = member.getMemberEmail();
             this.memberPassword = member.getMemberPassword();
             this.memberName = member.getMemberName();
+            this.memberPhone = member.getMemberPhone();
         }
     }
 
@@ -55,6 +57,7 @@ public class MemberResponseDTO {
             this.memberEmail = member.getMemberEmail();
             this.memberPassword = member.getMemberPassword();
             this.memberName = member.getMemberName();
+            this.memberPhone = member.getMemberPhone();
         }
     }
 
@@ -72,6 +75,7 @@ public class MemberResponseDTO {
             this.memberEmail = member.getMemberEmail();
             this.memberPassword = member.getMemberPassword();
             this.memberName = member.getMemberName();
+            this.memberPhone = member.getMemberPhone();
         }
     }
 
