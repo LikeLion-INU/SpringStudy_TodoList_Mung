@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class TodoController {
     private final TodoServiceImpl todoService;
     @PostMapping("/create")
-    public ResponseEntity<?> create(@ModelAttribute TodoRequestDTO.TodoCreateDTO todoCreateDTO, HttpSession httpSession) {
+    public ResponseEntity<?> create(@RequestBody TodoRequestDTO.TodoCreateDTO todoCreateDTO, HttpSession httpSession) {
         try {
             log.info("[TodoController] create");
             Long memberId = (Long) httpSession.getAttribute("memberId");
@@ -36,7 +36,7 @@ public class TodoController {
     }
 
     @PostMapping("/update/{todoId}")
-    public ResponseEntity<?> update(@ModelAttribute TodoRequestDTO.TodoUpdateDTO todoUpdateDTO, @PathVariable("todoId") Long todoId, HttpSession httpSession) {
+    public ResponseEntity<?> update(@RequestBody TodoRequestDTO.TodoUpdateDTO todoUpdateDTO, @PathVariable("todoId") Long todoId, HttpSession httpSession) {
         try {
             log.info("[TodoController] update");
             Long memberId = (Long) httpSession.getAttribute("memberId");
