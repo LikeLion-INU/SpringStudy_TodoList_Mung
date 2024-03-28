@@ -17,10 +17,6 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
     private final MemberServiceImpl memberService;
 
-    @GetMapping("/join")
-    public String join() {
-        return "join";
-    }
     @PostMapping("/join")
     public String join(@ModelAttribute MemberRequestDTO.MemberJoinDTO memberJoinDTO) {
         try {
@@ -60,10 +56,6 @@ public class MemberController {
             return null; // 알아보기 쉽게 null로 일단 하겠습니다!
         }
     }
-    @GetMapping("/delete")
-    public String delete() {
-        return "home";
-    }
     @PostMapping("/delete")
     public String delete(HttpSession httpSession) {
         try {
@@ -79,11 +71,6 @@ public class MemberController {
             log.info("[ERROR] Exception500");
             return null; // 알아보기 쉽게 null로 일단 하겠습니다!
         }
-    }
-
-    @GetMapping("/update")
-    public String update() {
-        return "update";
     }
 
     @PostMapping("/update")
