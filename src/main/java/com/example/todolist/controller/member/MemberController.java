@@ -1,16 +1,20 @@
 package com.example.todolist.controller.member;
 
+import com.example.todolist.common.exception.Exception500;
+import com.example.todolist.common.response.ApiResponse;
 import com.example.todolist.dto.member.MemberRequestDTO;
 import com.example.todolist.dto.member.MemberResponseDTO;
 import com.example.todolist.service.member.MemberServiceImpl;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/member")
 @Slf4j
@@ -18,112 +22,77 @@ public class MemberController {
     private final MemberServiceImpl memberService;
 
     @PostMapping("/join")
-    public String join(@ModelAttribute MemberRequestDTO.MemberJoinDTO memberJoinDTO) {
+    public ResponseEntity<?> join(@RequestBody MemberRequestDTO.MemberJoinDTO memberJoinDTO) {
         try {
             log.info("[MemberController] join");
-
             MemberResponseDTO.MemberJoinDTO result = memberService.join(memberJoinDTO);
-
-            if(result == null) {
-                log.info("[ERROR] MemberController join");
-                return "join";
-            }
-            System.out.println(result);
-
-            return "home";
-        } catch (Exception e) {
+            return ResponseEntity.ok().body(ApiResponse.SUCCESS(HttpStatus.CREATED.value(), "member join success", result));
+        } catch (Exception500 e) {
             log.info("[ERROR] Exception500");
-            return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.ERROR(e.status().value(), e.getMessage()));
         }
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute MemberRequestDTO.MemberLoginDTO memberLoginDTO, HttpSession httpSession) {
+    public ResponseEntity<?>  login(@ModelAttribute MemberRequestDTO.MemberLoginDTO memberLoginDTO, HttpSession httpSession) {
         try {
             log.info("[MemberController] login");
             MemberResponseDTO.MemberLoginDTO result = memberService.login(memberLoginDTO);
 
-            if(result == null) {
-                log.info("[ERROR] MemberController login");
-                return "home";
-            }
-
-            httpSession.setAttribute("memberId", result.getId());
-
-            return "main";
-        } catch (Exception e) {
+            return ResponseEntity.ok().body(ApiResponse.SUCCESS(HttpStatus.CREATED.value(), "member login success", result));
+        } catch (Exception500 e) {
             log.info("[ERROR] Exception500");
-            return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.ERROR(e.status().value(), e.getMessage()));
         }
     }
     @PostMapping("/delete")
-    public String delete(HttpSession httpSession) {
+    public ResponseEntity<?> delete(HttpSession httpSession) {
         try {
             log.info("[MemberController] delete");
             String result = memberService.delete((Long) httpSession.getAttribute("memberId"));
-
-            if(result != "SUCCESS") {
-                log.info("[ERROR] MemberController delete");
-                return "main";
-            }
-            return "home";
-        } catch (Exception e) {
+            return ResponseEntity.ok().body(ApiResponse.SUCCESS(HttpStatus.CREATED.value(), "member delete success", result));
+        } catch (Exception500 e) {
             log.info("[ERROR] Exception500");
-            return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.ERROR(e.status().value(), e.getMessage()));
         }
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute MemberRequestDTO.MemberUpdateDTO memberUpdateDTO, HttpSession httpSession) {
+    public ResponseEntity<?> update(@ModelAttribute MemberRequestDTO.MemberUpdateDTO memberUpdateDTO, HttpSession httpSession) {
         try {
             log.info("[MemberController] update");
-
             Long memberId = (Long) httpSession.getAttribute("memberId");
-
             MemberResponseDTO.MemberUpdateDTO result = memberService.update(memberId, memberUpdateDTO);
-
-            if(result == null) {
-                log.info("[ERROR] MemberController update");
-                return "update";
-            }
-            return "main";
-        } catch (Exception e) {
+            return ResponseEntity.ok().body(ApiResponse.SUCCESS(HttpStatus.CREATED.value(), "member update success", result));
+        } catch (Exception500 e) {
             log.info("[ERROR] Exception500");
-            return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.ERROR(e.status().value(), e.getMessage()));
         }
     }
 
     @GetMapping("/findOne")
-    public String findOne(HttpSession httpSession, Model model) {
+    public ResponseEntity<?> findOne(HttpSession httpSession) {
         try {
             log.info("[MemberController] findOne");
             Long memberId = (Long) httpSession.getAttribute("memberId");
             MemberResponseDTO.MemberFindOneDTO result = memberService.findOne(memberId);
 
-            if(result == null) {
-                log.info("[ERROR] MemberController findOne");
-                return "main";
-            }
-
-            model.addAttribute("member", result);
-
-            return "findOne";
-        } catch (Exception e) {
+            return ResponseEntity.ok().body(ApiResponse.SUCCESS(HttpStatus.CREATED.value(), "member findOne success", result));
+        } catch (Exception500 e) {
             log.info("[ERROR] Exception500");
-            return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.ERROR(e.status().value(), e.getMessage()));
         }
     }
 
     @GetMapping("/findAll")
-    public String findAll(Model model) {
+    public ResponseEntity<?> findAll() {
         try {
             log.info("[MemberController] findAll");
             MemberResponseDTO.MemberFindAllDTO result = memberService.findAll();
-            model.addAttribute("members", result);
-            return "findAll";
-        } catch (Exception e) {
+            return ResponseEntity.ok().body(ApiResponse.SUCCESS(HttpStatus.CREATED.value(), "member findAll success", result));
+        } catch (Exception500 e) {
             log.info("[ERROR] Exception500");
-            return null; // 알아보기 쉽게 null로 일단 하겠습니다!
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.ERROR(e.status().value(), e.getMessage()));
         }
     }
 }
