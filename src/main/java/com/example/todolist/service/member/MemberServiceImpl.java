@@ -159,12 +159,6 @@ public class MemberServiceImpl implements MemberService {
         try {
             log.info("[MemberServiceImpl] findAll");
             List<Member> memberList = memberRepository.findAll();
-//            List<MemberResponseDTO.MemberFindOneDTO> memberFindOneDTOList = new ArrayList<>();
-//
-//            for(int i = 0; i< memberList.size(); i++) {
-//                MemberResponseDTO.MemberFindOneDTO memberFindOneDTO = new MemberResponseDTO.MemberFindOneDTO(memberList.get(i));
-//                memberFindOneDTOList.add(memberFindOneDTO);
-//            }
 
             List<MemberResponseDTO.MemberFindOneDTO> memberFindOneDTOList = memberList.stream()
                     .map(MemberResponseDTO.MemberFindOneDTO::new)
