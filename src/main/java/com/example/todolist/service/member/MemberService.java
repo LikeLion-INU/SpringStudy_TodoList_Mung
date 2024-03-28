@@ -2,6 +2,7 @@ package com.example.todolist.service.member;
 
 import com.example.todolist.dto.member.MemberRequestDTO;
 import com.example.todolist.dto.member.MemberResponseDTO;
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface MemberService {
     // 회원 가입
@@ -9,6 +10,9 @@ public interface MemberService {
 
     // 로그인
     MemberResponseDTO.MemberLoginDTO login(MemberRequestDTO.MemberLoginDTO memberLoginDTO);
+
+    // 로그아웃
+    MemberResponseDTO.MemberLogoutDTO logout(HttpServletRequest request, Long memberId);
 
     // 회원 탈퇴
     String delete(Long userId);

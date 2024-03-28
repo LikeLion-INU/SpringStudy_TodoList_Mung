@@ -42,6 +42,23 @@ public class MemberResponseDTO {
             this.memberPhone = member.getMemberPhone();
         }
     }
+    // 로그아웃
+    @Data
+    public static class MemberLogoutDTO {
+        private Long Id; // 고유 식별자
+        private String memberEmail; // 이메일
+        private String memberPassword; // 비밀번호
+        private String memberName; // 이름
+        private String memberPhone; // 전화번호
+
+        public MemberLogoutDTO(Member member) {
+            this.Id = member.getId();
+            this.memberEmail = member.getMemberEmail();
+            this.memberPassword = member.getMemberPassword();
+            this.memberName = member.getMemberName();
+            this.memberPhone = member.getMemberPhone();
+        }
+    }
 
     // 회원 탈퇴
     @Data

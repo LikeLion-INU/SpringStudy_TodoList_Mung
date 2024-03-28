@@ -5,6 +5,7 @@ import com.example.todolist.common.response.ApiResponse;
 import com.example.todolist.dto.member.MemberRequestDTO;
 import com.example.todolist.dto.member.MemberResponseDTO;
 import com.example.todolist.service.member.MemberServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +48,20 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.ERROR(e.status().value(), e.getMessage()));
         }
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpSession httpSession, HttpServletRequest request) {
+        try {
+            log.info("[MemberController] logout");
+            MemberResponseDTO.MemberLogoutDTO result = memberService.logout(request, (Long) httpSession.getAttribute("memberId"));
+
+            return ResponseEntity.ok().body(ApiResponse.SUCCESS(HttpStatus.CREATED.value(), "member logout success", result));
+        } catch (Exception500 e) {
+            log.info("[ERROR] Exception500");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.ERROR(e.status().value(), e.getMessage()));
+        }
+    }
+
     @PostMapping("/delete")
     public ResponseEntity<?> delete(HttpSession httpSession) {
         try {

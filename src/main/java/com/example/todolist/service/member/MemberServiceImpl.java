@@ -7,6 +7,8 @@ import com.example.todolist.dto.member.MemberResponseDTO;
 import com.example.todolist.entity.member.Member;
 import com.example.todolist.repository.member.MemberRepository;
 import com.example.todolist.repository.todo.TodoRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -76,6 +78,31 @@ public class MemberServiceImpl implements MemberService {
         } catch (Exception e){
             log.info("[Exception500] MemberServiceImpl login");
             throw new CustomException(ErrorCode.SERVER_ERROR, "MemberServiceImpl login : " + e.getMessage());
+        }
+    }
+
+    @Override
+    public MemberResponseDTO.MemberLogoutDTO logout(HttpServletRequest request, Long memberId) {
+        try {
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                session.invalidate(); // 세션 무효화
+            }
+
+            Optional<Member> optionalFindMember = memberRepository.findById(memberId); // DB에서 회원 조회
+
+            if(optionalFindMember.isEmpty()) {
+                // 존재하지 않은 이메일
+                log.info("[ERROR] 존재하지 않은 회원 입니다.");
+                throw new CustomException(ErrorCode.EMAIL_NOT_FOUND);
+            }
+            return new MemberResponseDTO.MemberLogoutDTO(optionalFindMember.get());
+        } catch (CustomException ce){
+            log.info("[CustomException] MemberServiceImpl logout");
+            throw ce;
+        } catch (Exception e){
+            log.info("[Exception500] MemberServiceImpl logout");
+            throw new CustomException(ErrorCode.SERVER_ERROR, "MemberServiceImpl logout : " + e.getMessage());
         }
     }
 
